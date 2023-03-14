@@ -1,17 +1,23 @@
 package com.ezgroceries.shoppinglist.controller;
 
-import com.ezgroceries.shoppinglist.model.Cocktail;
+import com.ezgroceries.shoppinglist.exceptions.CocktailNotFoundException;
+import com.ezgroceries.shoppinglist.model.CocktailDBResponse;
+import com.ezgroceries.shoppinglist.model.Drink;
 import com.ezgroceries.shoppinglist.model.ShoppingList;
+import com.ezgroceries.shoppinglist.repository.CocktailDBClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -21,9 +27,15 @@ class ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private CocktailDBClient client;
 
     @Test
     public void getCocktailsSuccess() throws Exception {
+        var response = new CocktailDBResponse();
+        response.setDrinks(List.of(new Drink("11102","Black Russian","Ordinary Drink")));
+
+        given(client.searchCocktails("Russian")).willReturn(response);
 
         mockMvc.perform(get("/cocktails")
                         .param("search","Russian")
@@ -31,7 +43,24 @@ class ControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].cocktailId").value("23b3d85a-3928-41c0-a533-6538a71e17c4"));
+                .andExpect(jsonPath("$.drinks[0].idDrink").value("11102"));
+
+        verify(client).searchCocktails(anyString());
+    }
+
+    @Test
+    @Disabled
+    public void getCocktailsFailure() throws Exception {
+        var response = new CocktailDBResponse();
+        //response.setDrinks(List.of(new Drink("11102","Black Russian","Ordinary Drink")));
+
+        given(client.searchCocktails(anyString())).willReturn(response);
+
+        mockMvc.perform(get("/cocktails")
+                        .param("search","Cartman")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -47,9 +76,13 @@ class ControllerTest {
 
     @Test
     void addCocktailToShoppingListSuccess() throws Exception {
+        var response = new CocktailDBResponse();
+        response.setDrinks(List.of(new Drink("11000","Mojito","Cocktail")));
+
+        given(client.searchCocktails("Mojito")).willReturn(response);
 
         mockMvc.perform(post("/shopping-lists/{shoppingListId}/cocktails","222")
-                .content("{\n" + "  \"cocktailId\": \"23b3d85a-3928-41c0-a533-6538a71e17c4\"\n" + "}")
+                .content("{\n" + "  \"name\": \"Mojito\"\n" + "}")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -58,6 +91,10 @@ class ControllerTest {
 
     @Test
     void getShoppingList() throws Exception{
+        var response = new CocktailDBResponse();
+        response.setDrinks(List.of(new Drink("11000","Mojito","Cocktail")));
+
+        given(client.searchCocktails("Mojito")).willReturn(response);
 
         mockMvc.perform(get("/shopping-lists/{shoppingListId}","90689338-499a-4c49-af90-f1e73068ad4f"))
                 .andDo(print())
@@ -69,11 +106,16 @@ class ControllerTest {
 
     @Test
     void getShoppingListSuccess() throws Exception {
-        Cocktail margerita = new Cocktail("23b3d85a-3928-41c0-a533-6538a71e17c4","Margerita","Cocktail glass","Rub the rim of the glass with the lime slice to make the salt stick to it. Take care to moisten..",
-                "https://www.thecocktaildb.com/images/media/drink/wpxpvu1439905379.jpg",List.of("Tequila","Triple sec","Lime juice","Salt"));
+        var response = new CocktailDBResponse();
+        var drinkMojito = new Drink("11000","Mojito","Cocktail","Light rum","Lime","Sugar");
+        var drinkMargarita = new Drink( "11007","Margarita","Ordinary Drink","Tequila","Triple sec","Lime juice");
+        response.setDrinks(List.of(drinkMojito,drinkMargarita));
+
+        given(client.searchCocktails(anyString())).willReturn(response);
+
         var shoppingLists = new ArrayList<ShoppingList>();
-        var shopList1 = new ShoppingList("90689338-499a-4c49-af90-f1e73068ad4f","Stephanie's birthday", margerita.getIngredients());
-        var shopList2 = new ShoppingList("6c7d09c2-8a25-4d54-a979-25ae779d2465", "My Birthday", margerita.getIngredients());
+        var shopList1 = new ShoppingList("90689338-499a-4c49-af90-f1e73068ad4f","Stephanie's birthday", drinkMojito.getIngredients());
+        var shopList2 = new ShoppingList("6c7d09c2-8a25-4d54-a979-25ae779d2465", "My Birthday", drinkMargarita.getIngredients());
         shoppingLists.add(shopList1);
         shoppingLists.add(shopList2);
 
