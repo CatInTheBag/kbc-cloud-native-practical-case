@@ -66,4 +66,47 @@ public class Cocktail {
     public void setIngredients(List<String> ingredients) {
         this.ingredients = ingredients;
     }
+
+    public static class CocktailBuilder {
+        private String cocktailId;
+        private String name;
+        private String glass;
+        private String instructions;
+        private String image;
+        private List<String> ingredients;
+
+        public CocktailBuilder setCocktailId(String cocktailId) {
+            this.cocktailId = cocktailId;
+            return this;
+        }
+
+        public CocktailBuilder setName(String name){
+            this.name = name;
+            return this;
+        }
+
+        public CocktailBuilder setGlass(String glass){
+            this.glass = glass;
+            return this;
+        }
+
+        public CocktailBuilder setInstructions(String instructions){
+            this.instructions = instructions;
+            return this;
+        }
+
+        public CocktailBuilder setImage(String image){
+            this.image = image;
+            return this;
+        }
+
+        public CocktailBuilder setIngredients(List<String> ingredients){
+            this.ingredients = ingredients;
+            return this;
+        }
+
+        public Cocktail build(){
+            return new Cocktail(cocktailId, name, glass, instructions, image, ingredients);
+        }
+    }
 }
