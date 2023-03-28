@@ -1,9 +1,8 @@
 package com.ezgroceries.shoppinglist.controller;
 
-import com.ezgroceries.shoppinglist.exceptions.CocktailNotFoundException;
 import com.ezgroceries.shoppinglist.model.CocktailDBResponse;
 import com.ezgroceries.shoppinglist.model.Drink;
-import com.ezgroceries.shoppinglist.model.ShoppingList;
+import com.ezgroceries.shoppinglist.model.ShoppingListRequest;
 import com.ezgroceries.shoppinglist.repository.CocktailDBClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
@@ -33,7 +32,7 @@ class ControllerTest {
     @Test
     public void getCocktailsSuccess() throws Exception {
         var response = new CocktailDBResponse();
-        response.setDrinks(List.of(new Drink("11102","Black Russian","Ordinary Drink")));
+        response.setDrinks(List.of(new Drink("11102","Black Russian")));
 
         given(client.searchCocktails("Russian")).willReturn(response);
 
@@ -77,7 +76,7 @@ class ControllerTest {
     @Test
     void addCocktailToShoppingListSuccess() throws Exception {
         var response = new CocktailDBResponse();
-        response.setDrinks(List.of(new Drink("11000","Mojito","Cocktail")));
+        response.setDrinks(List.of(new Drink("11000","Mojito")));
 
         given(client.searchCocktails("Mojito")).willReturn(response);
 
@@ -92,7 +91,7 @@ class ControllerTest {
     @Test
     void getShoppingList() throws Exception{
         var response = new CocktailDBResponse();
-        response.setDrinks(List.of(new Drink("11000","Mojito","Cocktail")));
+        response.setDrinks(List.of(new Drink("11000","Mojito")));
 
         given(client.searchCocktails("Mojito")).willReturn(response);
 
@@ -107,15 +106,15 @@ class ControllerTest {
     @Test
     void getShoppingListSuccess() throws Exception {
         var response = new CocktailDBResponse();
-        var drinkMojito = new Drink("11000","Mojito","Cocktail","Light rum","Lime","Sugar");
-        var drinkMargarita = new Drink( "11007","Margarita","Ordinary Drink","Tequila","Triple sec","Lime juice");
+        var drinkMojito = new Drink("11000","Mojito","Light rum","Lime","Sugar");
+        var drinkMargarita = new Drink( "11007","Margarita","Tequila","Triple sec","Lime juice");
         response.setDrinks(List.of(drinkMojito,drinkMargarita));
 
         given(client.searchCocktails(anyString())).willReturn(response);
 
-        var shoppingLists = new ArrayList<ShoppingList>();
-        var shopList1 = new ShoppingList("90689338-499a-4c49-af90-f1e73068ad4f","Stephanie's birthday", drinkMojito.getIngredients());
-        var shopList2 = new ShoppingList("6c7d09c2-8a25-4d54-a979-25ae779d2465", "My Birthday", drinkMargarita.getIngredients());
+        var shoppingLists = new ArrayList<ShoppingListRequest>();
+        var shopList1 = new ShoppingListRequest("90689338-499a-4c49-af90-f1e73068ad4f","Stephanie's birthday", drinkMojito.getIngredients());
+        var shopList2 = new ShoppingListRequest("6c7d09c2-8a25-4d54-a979-25ae779d2465", "My Birthday", drinkMargarita.getIngredients());
         shoppingLists.add(shopList1);
         shoppingLists.add(shopList2);
 

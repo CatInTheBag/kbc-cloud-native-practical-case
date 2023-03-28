@@ -1,20 +1,43 @@
 package com.ezgroceries.shoppinglist.model;
 
-import java.util.List;
+import com.ezgroceries.shoppinglist.converter.StringSetConverter;
+import org.hibernate.annotations.GenericGenerator;
 
-public class Cocktail {
+import javax.persistence.*;
+import java.util.Set;
+
+@Entity
+@Table(name = "cocktail")
+public class CocktailEntity {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private String id;
+
+    @Column(name = "id_drink")
     private String cocktailId;
-    private String name;
-    private String glass;
-    private String instructions;
-    private String image;
-    private List<String> ingredients;
 
-    public Cocktail(String cocktailId, String name, String glass, String instructions, String image, List<String> ingredients) {
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "glass")
+    private String glass;
+
+    @Column(name = "image")
+    private String image;
+
+    @Column(name = "ingredients")
+    @Convert(converter = StringSetConverter.class)
+    private Set<String> ingredients;
+
+    public CocktailEntity(){};
+
+    public CocktailEntity(String cocktailId, String name, String glass, String image, Set<String> ingredients) {
         this.cocktailId = cocktailId;
         this.name = name;
         this.glass = glass;
-        this.instructions = instructions;
         this.image = image;
         this.ingredients = ingredients;
     }
@@ -43,14 +66,6 @@ public class Cocktail {
         this.glass = glass;
     }
 
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
-
     public String getImage() {
         return image;
     }
@@ -59,21 +74,21 @@ public class Cocktail {
         this.image = image;
     }
 
-    public List<String> getIngredients() {
+    public Set<String> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<String> ingredients) {
+    public void setIngredients(Set<String> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public static class CocktailBuilder {
+    /*public static class CocktailBuilder {
         private String cocktailId;
         private String name;
         private String glass;
         private String instructions;
         private String image;
-        private List<String> ingredients;
+        private Set<String> ingredients;
 
         public CocktailBuilder setCocktailId(String cocktailId) {
             this.cocktailId = cocktailId;
@@ -90,23 +105,18 @@ public class Cocktail {
             return this;
         }
 
-        public CocktailBuilder setInstructions(String instructions){
-            this.instructions = instructions;
-            return this;
-        }
-
         public CocktailBuilder setImage(String image){
             this.image = image;
             return this;
         }
 
-        public CocktailBuilder setIngredients(List<String> ingredients){
+        public CocktailBuilder setIngredients(Set<String> ingredients){
             this.ingredients = ingredients;
             return this;
         }
 
         public Cocktail build(){
-            return new Cocktail(cocktailId, name, glass, instructions, image, ingredients);
+            return new Cocktail(cocktailId, name, glass, image, ingredients);
         }
-    }
+    }*/
 }

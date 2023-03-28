@@ -1,12 +1,16 @@
 create table IF NOT EXISTS SHOPPING_LIST
 (
-    ID   UUID PRIMARY KEY,
-    NAME TEXT
+    id VARCHAR(100) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    ingredients VARCHAR(100)
 );
 
 create table IF NOT EXISTS COCKTAIL
 (
-    id UUID PRIMARY KEY,
+    id VARCHAR(100)  PRIMARY KEY,
     id_drink VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    glass VARCHAR(100) NOT NULL,
+    image VARCHAR(100) NOT NULL,
     ingredients VARCHAR(100) NOT NULL
-)
+);
