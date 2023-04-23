@@ -1,15 +1,18 @@
 package com.ezgroceries.shoppinglist.converter;
 
-import com.ezgroceries.shoppinglist.model.CocktailEntity;
-import com.ezgroceries.shoppinglist.model.Drink;
-import com.ezgroceries.shoppinglist.model.ShoppingListEntity;
-import com.ezgroceries.shoppinglist.model.ShoppingListRequest;
+import com.ezgroceries.shoppinglist.dto.ShoppingListWithIngredientsDTO;
+import com.ezgroceries.shoppinglist.model.*;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class Converter {
 
-    public CocktailEntity convertCocktailResponseToEntity(Drink drink){
+    //TODO: Could be improved with Builder Pattern
+    public CocktailEntity convertCocktailPublicAPIResponseToEntity(Drink drink){
         CocktailEntity cocktail = new CocktailEntity();
         cocktail.setCocktailId(drink.getIdDrink());
         cocktail.setName(drink.getStrDrink());
@@ -23,5 +26,16 @@ public class Converter {
         ShoppingListEntity entity = new ShoppingListEntity();
         entity.setName(request.getName());
         return entity;
+    }
+
+    public ShoppingListWithIngredientsDTO convertShoppingListAndCocktails(String shoppingListName, List<CocktailEntity> cocktailList){
+        var shoppingListWithIngredientsDTO = new ShoppingListWithIngredientsDTO();
+        shoppingListWithIngredientsDTO.setShoppingListName(shoppingListName);
+
+        for(CocktailEntity entity : cocktailList){
+            shoppingListWithIngredientsDTO.setIngredients(entity.getIngredients());
+        }
+
+        return shoppingListWithIngredientsDTO;
     }
 }

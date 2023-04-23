@@ -1,9 +1,14 @@
 package com.ezgroceries.shoppinglist.model;
 
 import com.ezgroceries.shoppinglist.converter.StringSetConverter;
+import com.ezgroceries.shoppinglist.dto.CocktailDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -11,7 +16,7 @@ import java.util.Set;
 public class CocktailEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(updatable = false)
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
@@ -19,18 +24,21 @@ public class CocktailEntity {
     @Column(name = "id_drink")
     private String cocktailId;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "glass")
     private String glass;
 
-    @Column(name = "image")
     private String image;
 
-    @Column(name = "ingredients")
     @Convert(converter = StringSetConverter.class)
     private Set<String> ingredients;
+
+    @OneToMany(
+            cascade = {CascadeType.PERSIST,CascadeType.REMOVE},
+            mappedBy = "cocktail"
+    )
+    @JsonIgnoreProperties("cocktail")
+    private List<CocktailShoppingListEntity> cocktailShoppingLists;
 
     public CocktailEntity(){};
 
@@ -40,6 +48,14 @@ public class CocktailEntity {
         this.glass = glass;
         this.image = image;
         this.ingredients = ingredients;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCocktailId() {
@@ -82,41 +98,31 @@ public class CocktailEntity {
         this.ingredients = ingredients;
     }
 
-    /*public static class CocktailBuilder {
-        private String cocktailId;
-        private String name;
-        private String glass;
-        private String instructions;
-        private String image;
-        private Set<String> ingredients;
+    /*public List<CocktailShoppingListEntity> getCocktailShoppingList() {
+        return cocktailShoppingLists;
+    }
 
-        public CocktailBuilder setCocktailId(String cocktailId) {
-            this.cocktailId = cocktailId;
-            return this;
-        }
+    public void setCocktailShoppingList(List<CocktailShoppingListEntity> cocktailShoppingList) {
+        this.cocktailShoppingLists = cocktailShoppingList;
+    }
 
-        public CocktailBuilder setName(String name){
-            this.name = name;
-            return this;
+    public void addCocktailToShoppingList(CocktailShoppingListEntity cocktailShoppingListEntity){
+        if(!this.getCocktailShoppingList().contains(cocktailShoppingListEntity)){
+            this.cocktailShoppingLists.add(cocktailShoppingListEntity);
         }
+    }
 
-        public CocktailBuilder setGlass(String glass){
-            this.glass = glass;
-            return this;
-        }
-
-        public CocktailBuilder setImage(String image){
-            this.image = image;
-            return this;
-        }
-
-        public CocktailBuilder setIngredients(Set<String> ingredients){
-            this.ingredients = ingredients;
-            return this;
-        }
-
-        public Cocktail build(){
-            return new Cocktail(cocktailId, name, glass, image, ingredients);
-        }
+    public void removeCocktailFromShoppingList(CocktailShoppingListEntity cocktailShoppingListEntity){
+        this.cocktailShoppingLists.remove(cocktailShoppingListEntity);
     }*/
+
+    public CocktailDTO toDto(){
+        return new CocktailDTO.Builder()
+                .withCocktailId(this.getCocktailId())
+                .withName(this.getName())
+                .withGlass(this.getGlass())
+                .withImage(this.getImage())
+                .withIngredients(this.getIngredients())
+                .build();
+    }
 }

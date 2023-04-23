@@ -1,8 +1,7 @@
 create table IF NOT EXISTS SHOPPING_LIST
 (
     id VARCHAR(100) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    ingredients VARCHAR(100)
+    name VARCHAR(100) NOT NULL
 );
 
 create table IF NOT EXISTS COCKTAIL
