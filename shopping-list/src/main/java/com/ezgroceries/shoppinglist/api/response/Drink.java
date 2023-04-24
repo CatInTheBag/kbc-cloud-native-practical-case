@@ -1,4 +1,4 @@
-package com.ezgroceries.shoppinglist.model;
+package com.ezgroceries.shoppinglist.api.response;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +31,7 @@ public class Drink {
     private String strIngredient5;
 
     private String strImageSource;
-
+    private String strInstructions;
     private String dateModified;
 
     public String getIdDrink() {
@@ -105,6 +105,14 @@ public class Drink {
 
     public void setStrImageSource(String strImageSource) {
         this.strImageSource = strImageSource;
+    }
+
+    public String getStrInstructions() {
+        return strInstructions;
+    }
+
+    public void setStrInstructions(String strInstructions) {
+        this.strInstructions = strInstructions;
     }
 
     public String getDateModified() {

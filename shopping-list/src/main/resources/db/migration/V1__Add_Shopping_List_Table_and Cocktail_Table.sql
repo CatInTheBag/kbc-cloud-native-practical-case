@@ -10,6 +10,7 @@ create table IF NOT EXISTS COCKTAIL
     id_drink VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
     glass VARCHAR(100) NOT NULL,
-    image VARCHAR(100) NOT NULL,
+    image VARCHAR(100),
+    instructions VARCHAR(100),
     ingredients VARCHAR(100) NOT NULL
 );

@@ -1,12 +1,13 @@
 package com.ezgroceries.shoppinglist.converter;
 
+import com.ezgroceries.shoppinglist.api.response.CocktailDBResponse;
+import com.ezgroceries.shoppinglist.api.response.Drink;
 import com.ezgroceries.shoppinglist.dto.ShoppingListWithIngredientsDTO;
 import com.ezgroceries.shoppinglist.model.*;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class Converter {
@@ -38,5 +39,44 @@ public class Converter {
         }
 
         return shoppingListWithIngredientsDTO;
+    }
+
+    public List<Drink> convertEntitiesToListDrink(List<CocktailEntity> cocktailEntityList){
+        var drinks = new ArrayList<Drink>();
+
+        for(CocktailEntity entity : cocktailEntityList) {
+            Drink drink = new Drink();
+            drink.setIdDrink(entity.getCocktailId());
+            drink.setStrDrink(entity.getName());
+            drink.setStrGlass(entity.getGlass());
+            drink.setStrImageSource(entity.getImage());
+            drink.setStrInstructions(entity.getInstructions());
+
+            String[] ingredientsArray = entity.getIngredients().toArray(new String[0]);
+            for (int i = 0; i <= ingredientsArray.length; i++) {
+                String ingredient = ingredientsArray[i];
+                switch (i) {
+                    case 0:
+                        drink.setStrIngredient1(ingredient);
+                        break;
+                    case 1:
+                        drink.setStrIngredient2(ingredient);
+                        break;
+                    case 2:
+                        drink.setStrIngredient3(ingredient);
+                        break;
+                    case 3:
+                        drink.setStrIngredient4(ingredient);
+                        break;
+                    case 4:
+                        drink.setStrIngredient5(ingredient);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            drinks.add(drink);
+        }
+        return drinks;
     }
 }

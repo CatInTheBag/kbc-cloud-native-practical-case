@@ -1,9 +1,10 @@
 package com.ezgroceries.shoppinglist.service.impl;
 
+import com.ezgroceries.shoppinglist.api.response.CocktailDBResponse;
 import com.ezgroceries.shoppinglist.converter.Converter;
 import com.ezgroceries.shoppinglist.dto.CocktailDTO;
 import com.ezgroceries.shoppinglist.model.CocktailEntity;
-import com.ezgroceries.shoppinglist.model.Drink;
+import com.ezgroceries.shoppinglist.api.response.Drink;
 import com.ezgroceries.shoppinglist.repository.CocktailDBClient;
 import com.ezgroceries.shoppinglist.repository.CocktailRepository;
 import com.ezgroceries.shoppinglist.service.CocktailService;
@@ -23,32 +24,20 @@ public class CocktailServiceImpl implements CocktailService {
     Converter converter;
 
     @Override
-    public CocktailDTO getCocktail(String search) {
+    public CocktailDBResponse getCocktail(String search) {
 
-        var cocktailEntity = repository.findByName(search);
+        CocktailDBResponse response = client.searchCocktails(search);
 
-        if(cocktailEntity.isEmpty()){
-
-            addCocktailToDB(search);
-
-            cocktailEntity = repository.findByName(search);
-
-            if(cocktailEntity.isEmpty()) {
-                return new CocktailDTO.Builder()
-                        .withErrorMessage("Cocktail not found")
-                        .build();
-            }
+        if(response == null){
+            return null;
         }
 
-        return cocktailEntity.get().toDto();
+        persistCocktails(response);
+
+        return response;
     }
 
-    public void addCocktailToDB(String search){
-        var response =  client.searchCocktails(search);
-
-        if(null == response.getDrinks()){
-            return;
-        }
+    public void persistCocktails(CocktailDBResponse response){
 
         for (Drink drink : response.getDrinks()){
             if(repository.findByCocktailId(drink.getIdDrink()).isEmpty()){

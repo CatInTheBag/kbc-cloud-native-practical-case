@@ -1,7 +1,7 @@
 package com.ezgroceries.shoppinglist.controller;
 
-import com.ezgroceries.shoppinglist.model.CocktailDBResponse;
-import com.ezgroceries.shoppinglist.model.Drink;
+import com.ezgroceries.shoppinglist.api.response.CocktailDBResponse;
+import com.ezgroceries.shoppinglist.api.response.Drink;
 import com.ezgroceries.shoppinglist.model.ShoppingListRequest;
 import com.ezgroceries.shoppinglist.repository.CocktailDBClient;
 import com.fasterxml.jackson.databind.ObjectMapper;

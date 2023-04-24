@@ -30,6 +30,8 @@ public class CocktailEntity {
 
     private String image;
 
+    private String instructions;
+
     @Convert(converter = StringSetConverter.class)
     private Set<String> ingredients;
 
@@ -88,6 +90,14 @@ public class CocktailEntity {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
     }
 
     public Set<String> getIngredients() {

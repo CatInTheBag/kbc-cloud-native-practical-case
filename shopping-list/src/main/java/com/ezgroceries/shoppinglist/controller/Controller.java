@@ -1,7 +1,6 @@
 package com.ezgroceries.shoppinglist.controller;
 
-import com.ezgroceries.shoppinglist.dto.CocktailDTO;
-import com.ezgroceries.shoppinglist.dto.ShoppingListDTO;
+import com.ezgroceries.shoppinglist.api.response.CocktailDBResponse;
 import com.ezgroceries.shoppinglist.dto.ShoppingListWithIngredientsDTO;
 import com.ezgroceries.shoppinglist.model.*;
 import com.ezgroceries.shoppinglist.repository.CocktailDBClient;
@@ -34,13 +33,13 @@ public class Controller {
     private CocktailShoppingListService cocktailShoppingListService;
 
     @GetMapping("cocktails")
-    public ResponseEntity<CocktailDTO> getCocktails(@RequestParam("search") String search){
+    public ResponseEntity<CocktailDBResponse> getCocktails(@RequestParam("search") String search){
 
         logger.info("Calling endpoint /cocktails with search argument " + search);
 
         var response = cocktailService.getCocktail(search);
 
-        if(null != response.getErrorMessage()){
+        if(response == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
