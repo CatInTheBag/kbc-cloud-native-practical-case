@@ -95,6 +95,11 @@ public class Controller {
         }
 
         var cocktailList = cocktailShoppingListService.findCocktailsWithShoppingListId(shoppingList.get().getId());
+
+        if(cocktailList.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
         var shoppingListWithIngredientsDto = shoppingListService.convertShoppingList(shoppingList.get().getName(),cocktailList);
 
         //TODO:: error when returning

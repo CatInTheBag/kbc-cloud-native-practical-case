@@ -11,7 +11,7 @@ import java.util.Set;
 @Component
 public class Converter {
 
-    //TODO: Could be improved with Builder Pattern
+    //TODO: Could be improved with Builder Pattern and streams
     public CocktailEntity convertCocktailPublicAPIResponseToEntity(Drink drink){
         CocktailEntity cocktail = new CocktailEntity();
         cocktail.setCocktailId(drink.getIdDrink());
@@ -29,6 +29,7 @@ public class Converter {
     }
 
     public ShoppingListWithIngredientsDTO convertShoppingListAndCocktails(String shoppingListName, List<CocktailEntity> cocktailList){
+        //TODO: improve with streams
         var shoppingListWithIngredientsDTO = new ShoppingListWithIngredientsDTO();
         shoppingListWithIngredientsDTO.setShoppingListName(shoppingListName);
 
